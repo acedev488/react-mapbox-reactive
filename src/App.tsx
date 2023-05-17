@@ -1,8 +1,11 @@
+import { MapProvider } from './map/MapContext'
+
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN
+
 function App() {
   return (
-    <div style={{ padding: 24 }}>
-      <h1>react-mapbox-reactive</h1>
-      <p>Project scaffold — map integration coming soon.</p>
+    <div style={{ position: 'fixed', inset: 0 }}>
+      <MapProvider accessToken={MAPBOX_TOKEN} mapStyle="mapbox://styles/mapbox/streets-v12" />
     </div>
   )
 }

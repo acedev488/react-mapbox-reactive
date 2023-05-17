@@ -2,6 +2,7 @@ import mapboxgl from 'mapbox-gl'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { DEFAULT_VIEWPORT } from './types'
+import { useMapStore } from '../store/useMapStore'
 
 export interface MapContextValue {
   map: mapboxgl.Map | null
@@ -34,6 +35,7 @@ export function MapProvider({ accessToken, mapStyle, children }: MapProviderProp
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
   const [value, setValue] = useState<MapContextValue>({ map: null, isStyleLoaded: false })
+  const setViewport = useMapStore((s) => s.setViewport)
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -50,13 +52,27 @@ export function MapProvider({ accessToken, mapStyle, children }: MapProviderProp
     const handleReady = () => setValue({ map, isStyleLoaded: true })
     map.on('load', handleReady)
 
+    // One-way sync, map -> store: once the user stops panning/zooming, push
+    // the resulting camera position into zustand so the rest of the app
+    // (a HUD, a "share this view" link, ...) can read it reactively.
+    const handleMoveEnd = () => {
+      setViewport({
+        center: map.getCenter().toArray() as [number, number],
+        zoom: map.getZoom(),
+        bearing: map.getBearing(),
+        pitch: map.getPitch(),
+      })
+    }
+    map.on('moveend', handleMoveEnd)
+
     return () => {
       map.off('load', handleReady)
+      map.off('moveend', handleMoveEnd)
       map.remove()
       mapRef.current = null
       setValue({ map: null, isStyleLoaded: false })
     }
-  }, [accessToken, mapStyle])
+  }, [accessToken, mapStyle, setViewport])
 
   return (
     <MapContext.Provider value={value}>

@@ -51,6 +51,17 @@ export function Marker({ lngLat, color = '#3fb1ce', draggable = false, onDragEnd
     markerRef.current?.setLngLat(lngLat)
   }, [lngLat[0], lngLat[1]])
 
+  // Reactive prop: color. mapboxgl.Marker has no public setColor() — the
+  // constructor option is the only supported way to set it — so an update
+  // here goes around the public API and repaints the marker's own SVG,
+  // the same workaround Mapbox's own issue tracker recommends.
+  useEffect(() => {
+    const marker = markerRef.current
+    if (!marker) return
+    const fillable = marker.getElement().querySelectorAll<SVGElement>('svg g[fill], svg path[fill]')
+    fillable.forEach((node) => node.setAttribute('fill', color))
+  }, [color])
+
   // Reactive prop: draggable — mapboxgl.Marker exposes a real setter for this.
   useEffect(() => {
     const marker = markerRef.current

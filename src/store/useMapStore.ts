@@ -9,6 +9,14 @@ export interface MarkerData {
   label?: string
 }
 
+export type BaseStyle = 'streets' | 'dark' | 'satellite'
+
+export const BASE_STYLE_URLS: Record<BaseStyle, string> = {
+  streets: 'mapbox://styles/mapbox/streets-v12',
+  dark: 'mapbox://styles/mapbox/dark-v11',
+  satellite: 'mapbox://styles/mapbox/satellite-streets-v12',
+}
+
 export interface CitiesLayerConfig {
   visible: boolean
   color: string
@@ -40,6 +48,9 @@ interface MapStoreState {
 
   heatmapVisible: boolean
   setHeatmapVisible: (visible: boolean) => void
+
+  activeBaseStyle: BaseStyle
+  setActiveBaseStyle: (style: BaseStyle) => void
 }
 
 export const useMapStore = create<MapStoreState>((set) => ({
@@ -68,4 +79,7 @@ export const useMapStore = create<MapStoreState>((set) => ({
 
   heatmapVisible: false,
   setHeatmapVisible: (heatmapVisible) => set({ heatmapVisible }),
+
+  activeBaseStyle: 'streets',
+  setActiveBaseStyle: (activeBaseStyle) => set({ activeBaseStyle }),
 }))

@@ -14,6 +14,8 @@ export function ControlPanel() {
   const selectMarker = useMapStore((s) => s.selectMarker)
   const heatmapVisible = useMapStore((s) => s.heatmapVisible)
   const setHeatmapVisible = useMapStore((s) => s.setHeatmapVisible)
+  const activeBaseStyle = useMapStore((s) => s.activeBaseStyle)
+  const setActiveBaseStyle = useMapStore((s) => s.setActiveBaseStyle)
 
   const handleRemoveSelected = () => {
     if (!selectedMarkerId) return
@@ -25,6 +27,18 @@ export function ControlPanel() {
     <div className="control-panel">
       <h1>react-mapbox-reactive</h1>
       <p className="hint">Click the map to drop a draggable marker.</p>
+
+      <label className="row">
+        Base style
+        <select
+          value={activeBaseStyle}
+          onChange={(e) => setActiveBaseStyle(e.target.value as typeof activeBaseStyle)}
+        >
+          <option value="streets">Streets</option>
+          <option value="dark">Dark</option>
+          <option value="satellite">Satellite</option>
+        </select>
+      </label>
 
       <section>
         <header>

@@ -52,6 +52,9 @@ interface MapStoreState {
 
   activeBaseStyle: BaseStyle
   setActiveBaseStyle: (style: BaseStyle) => void
+
+  showAnimatedMarker: boolean
+  setShowAnimatedMarker: (show: boolean) => void
 }
 
 export const useMapStore = create<MapStoreState>()(
@@ -89,6 +92,11 @@ export const useMapStore = create<MapStoreState>()(
 
       activeBaseStyle: 'streets',
       setActiveBaseStyle: (activeBaseStyle) => set({ activeBaseStyle }),
+
+      // Deliberately not persisted (see `partialize` below) — it's a demo
+      // toggle, not something a returning visitor needs restored.
+      showAnimatedMarker: false,
+      setShowAnimatedMarker: (showAnimatedMarker) => set({ showAnimatedMarker }),
     }),
     {
       name: 'react-mapbox-reactive',

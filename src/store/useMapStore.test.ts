@@ -36,6 +36,18 @@ describe('markers slice', () => {
 
     expect(useMapStore.getState().markers).toHaveLength(0)
   })
+
+  it('clears all markers and any selection', () => {
+    const { addMarker, selectMarker, clearMarkers } = useMapStore.getState()
+    addMarker({ id: 'a', lngLat: [0, 0], color: '#fff', draggable: false })
+    addMarker({ id: 'b', lngLat: [1, 1], color: '#000', draggable: false })
+    selectMarker('a')
+
+    clearMarkers()
+
+    expect(useMapStore.getState().markers).toHaveLength(0)
+    expect(useMapStore.getState().selectedMarkerId).toBeNull()
+  })
 })
 
 describe('citiesLayer slice', () => {

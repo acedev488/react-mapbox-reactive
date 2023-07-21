@@ -40,6 +40,7 @@ interface MapStoreState {
   addMarker: (marker: MarkerData) => void
   updateMarker: (id: string, patch: Partial<Omit<MarkerData, 'id'>>) => void
   removeMarker: (id: string) => void
+  clearMarkers: () => void
 
   selectedMarkerId: string | null
   selectMarker: (id: string | null) => void
@@ -76,6 +77,7 @@ export const useMapStore = create<MapStoreState>()(
           markers: s.markers.filter((m) => m.id !== id),
           selectedMarkerId: s.selectedMarkerId === id ? null : s.selectedMarkerId,
         })),
+      clearMarkers: () => set({ markers: [], selectedMarkerId: null }),
 
       selectedMarkerId: null,
       selectMarker: (id) => set({ selectedMarkerId: id }),

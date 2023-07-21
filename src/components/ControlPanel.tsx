@@ -12,6 +12,7 @@ export function ControlPanel() {
   const markerCount = useMapStore((s) => s.markers.length)
   const selectedMarkerId = useMapStore((s) => s.selectedMarkerId)
   const removeMarker = useMapStore((s) => s.removeMarker)
+  const clearMarkers = useMapStore((s) => s.clearMarkers)
   const heatmapVisible = useMapStore((s) => s.heatmapVisible)
   const setHeatmapVisible = useMapStore((s) => s.setHeatmapVisible)
   const activeBaseStyle = useMapStore((s) => s.activeBaseStyle)
@@ -109,6 +110,12 @@ export function ControlPanel() {
       {selectedMarkerId && (
         <button className="remove-marker" onClick={handleRemoveSelected}>
           Remove selected marker
+        </button>
+      )}
+
+      {markerCount > 0 && (
+        <button className="remove-marker" onClick={clearMarkers}>
+          Clear all markers
         </button>
       )}
 

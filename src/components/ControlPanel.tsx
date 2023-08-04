@@ -31,10 +31,12 @@ export function ControlPanel() {
       <h1>react-mapbox-reactive</h1>
       <p className="hint">Click the map to drop a draggable marker.</p>
 
-      <label className="row">
+      <label className="row" htmlFor="base-style-select">
         Base style
         <select
+          id="base-style-select"
           value={activeBaseStyle}
+          aria-label="Base map style"
           onChange={(e) => setActiveBaseStyle(e.target.value as typeof activeBaseStyle)}
         >
           <option value="streets">Streets</option>
@@ -59,6 +61,7 @@ export function ControlPanel() {
           Color
           <input
             type="color"
+            aria-label="Cities layer color"
             value={color}
             onChange={(e) => updateCitiesLayer({ color: e.target.value })}
           />
@@ -68,6 +71,7 @@ export function ControlPanel() {
           Radius ({radius}px)
           <input
             type="range"
+            aria-label="Cities layer radius"
             min={2}
             max={24}
             value={radius}
@@ -79,6 +83,7 @@ export function ControlPanel() {
           Opacity ({opacity.toFixed(2)})
           <input
             type="range"
+            aria-label="Cities layer opacity"
             min={0}
             max={1}
             step={0.05}

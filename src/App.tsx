@@ -10,6 +10,7 @@ import { AnimatedMarker } from './components/AnimatedMarker'
 import { MissingTokenNotice } from './components/MissingTokenNotice'
 import { KeyboardShortcuts } from './components/KeyboardShortcuts'
 import { MapLoadingOverlay } from './components/MapLoadingOverlay'
+import { UrlViewportSync } from './components/UrlViewportSync'
 import { useMapStore } from './store/useMapStore'
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN
@@ -25,6 +26,7 @@ function App() {
     <div style={{ position: 'fixed', inset: 0 }}>
       <MapProvider accessToken={MAPBOX_TOKEN}>
         <MapLoadingOverlay />
+        <UrlViewportSync />
         <CitiesLayer />
         <CitiesHeatmapLayer />
         <MarkerLayer />

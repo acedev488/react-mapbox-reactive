@@ -45,6 +45,38 @@ State lives in [zustand](https://github.com/pmndrs/zustand), completely decouple
 - **`useMapStore`** (`src/store/useMapStore.ts`) — the single zustand store: camera viewport, the marker list, and layer paint config. Nothing in here knows Mapbox exists.
 - Everything else (`MarkerLayer`, `CitiesLayer`, `ControlPanel`, `ClickToAddMarker`, `ViewportHud`) is glue: they read/write the store and render `<Marker>`/`<Layer>` — none of them touch `mapboxgl` directly.
 
+## Usage
+
+```tsx
+import { MapProvider } from './map/MapContext'
+import { Marker } from './map/Marker'
+import { Layer } from './map/Layer'
+
+function Example() {
+  return (
+    <MapProvider accessToken={import.meta.env.VITE_MAPBOX_TOKEN}>
+      <Marker lngLat={[-122.4194, 37.7749]} color="#3fb1ce" popupText="Hello!" />
+
+      <Layer
+        id="cities"
+        type="circle"
+        data={citiesGeoJson}
+        paint={{ 'circle-color': '#f43f5e', 'circle-radius': 8 }}
+      />
+    </MapProvider>
+  )
+}
+```
+
+Both components are ordinary JSX — conditionally render one, put it in a `.map()` over a list keyed by `id`, whatever. React handles the rest.
+
+## Gotchas (and how this repo handles them)
+
+- **`paint`/`layout` should be stable references.** `<Layer>` diffs these objects key-by-key against the previous render, but only reference-diffs each *value* — an inline object literal (`paint={{ ... }}`) is a new reference every render, so every render looks like "everything changed." Memoize with `useMemo` (see `CitiesLayer.tsx`) if the values themselves are usually unchanged.
+- **`mapboxgl.Marker` has no public `setColor`.** `<Marker>` works around this by patching the marker's own SVG `fill` attribute directly — the same workaround recommended in [mapbox-gl-js#9820](https://github.com/mapbox/mapbox-gl-js/issues/9820).
+- **`map.setStyle()` wipes any source/layer you added at runtime.** Switching base styles (`ControlPanel`'s style dropdown) flips `isStyleLoaded` to `false`, which every mounted `<Layer>` treats as "tear yourself down," then flips it back to `true` on the `style.load` event, which remounts them against the new style. See `MapContext.tsx`.
+- **Don't fight the user's own gesture.** The store's `viewport` is synced in both directions (map → store on `moveend`, store → map via `easeTo`). The store → map effect only acts if the store's value doesn't already match the map's actual camera, so panning the map doesn't feel like it's being pulled back.
+
 ## Running it
 
 1. Get a free access token at [account.mapbox.com](https://account.mapbox.com/access-tokens/).
@@ -52,4 +84,8 @@ State lives in [zustand](https://github.com/pmndrs/zustand), completely decouple
 3. `npm install`
 4. `npm run dev`
 
-Click anywhere on the map to drop a draggable marker; use the panel in the top-right to change the cities layer's color/radius/opacity live.
+Click anywhere on the map to drop a draggable marker; use the panel in the top-right to change the cities layer's color/radius/opacity live, switch base styles, or toggle the heatmap and the animated marker.
+
+## Testing
+
+`npm run test` runs the zustand store tests and the `diffKeys` unit tests (`vitest`). There's also a GitHub Actions workflow (`.github/workflows/ci.yml`) that runs lint, test, and build on every push.

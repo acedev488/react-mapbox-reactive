@@ -86,6 +86,37 @@ Both components are ordinary JSX — conditionally render one, put it in a `.map
 
 Click anywhere on the map to drop a draggable marker; use the panel in the top-right to change the cities layer's color/radius/opacity live, switch base styles, or toggle the heatmap and the animated marker.
 
+## Why components, not just hooks?
+
+A `useMarker(map, { lngLat, color })` hook could do the exact same
+mount/update/unmount work — the effects inside would look almost identical
+to `Marker.tsx`. The reason this repo uses components instead:
+
+- **Lists are free.** `markers.map((m) => <Marker key={m.id} ... />)` gets you
+  correct add/remove/reorder behavior from React's own key-based
+  reconciliation. The hook equivalent means manually diffing an array of
+  hook calls, which you can't do (hooks can't be called conditionally or in
+  a loop) — you'd end up re-deriving a lot of what JSX already gives you.
+- **Composition reads the same as the rest of the app.** `<Layer>` under a
+  conditional, inside a list, wrapped by a component that adds a click
+  handler — all ordinary JSX patterns, no separate mental model for
+  "map stuff" vs. "everything else."
+- **It's a closer match for how DOM elements already work in React**, which
+  is the whole premise this repo is exploring.
+
+This is not a claim that renderless components are strictly *better* than
+hooks in general — for a single, one-off map entity a hook is arguably
+simpler. It's specifically the "many entities driven by a list in state"
+case where components pull ahead.
+
+### Why not `react-map-gl`?
+
+[`react-map-gl`](https://github.com/visgl/react-map-gl) is a real, maintained
+wrapper around Mapbox/MapLibre with its own `<Marker>`/`<Source>`/`<Layer>`
+components — for production use, it's almost certainly what you want instead
+of hand-rolling this. This repo exists to show *how* that kind of wrapper
+works under the hood, not to replace it.
+
 ## Testing
 
 `npm run test` runs the zustand store tests and the `diffKeys` unit tests (`vitest`). There's also a GitHub Actions workflow (`.github/workflows/ci.yml`) that runs lint, test, and build on every push.

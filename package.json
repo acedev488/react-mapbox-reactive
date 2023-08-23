@@ -2,9 +2,12 @@
   "name": "react-mapbox-reactive",
   "description": "Driving Mapbox GL JS reactively from React state and zustand — markers and layers as renderless components with mount/update/unmount lifecycles.",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "module",
   "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/acedev488/react-mapbox-reactive.git"

@@ -1,5 +1,8 @@
 # react-mapbox-reactive
 
+[![CI](https://github.com/acedev488/react-mapbox-reactive/actions/workflows/ci.yml/badge.svg)](https://github.com/acedev488/react-mapbox-reactive/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+
 A small proof-of-concept for driving [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/guides/) entirely from React state, using ordinary component lifecycle (mount / update / unmount) instead of a bespoke imperative API.
 
 ## The idea
@@ -120,3 +123,13 @@ works under the hood, not to replace it.
 ## Testing
 
 `npm run test` runs the zustand store tests and the `diffKeys` unit tests (`vitest`). There's also a GitHub Actions workflow (`.github/workflows/ci.yml`) that runs lint, test, and build on every push.
+
+## Acknowledgments
+
+- [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/guides/) for the mapping engine.
+- [zustand](https://github.com/pmndrs/zustand) for state management that stays out of the way.
+- [`react-map-gl`](https://github.com/visgl/react-map-gl), whose public API was a helpful reference point while shaping this repo's `<Marker>`/`<Layer>` props.
+
+## License
+
+MIT — see [LICENSE](./LICENSE).

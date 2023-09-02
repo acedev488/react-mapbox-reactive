@@ -124,7 +124,11 @@ export function MapProvider({ accessToken, children }: MapProviderProps) {
     const current = map.getCenter()
     const centerDelta = Math.abs(current.lng - viewport.center[0]) + Math.abs(current.lat - viewport.center[1])
     const zoomDelta = Math.abs(map.getZoom() - viewport.zoom)
-    if (centerDelta < 1e-5 && zoomDelta < 1e-3) return
+    const bearingDelta = Math.abs(map.getBearing() - viewport.bearing)
+    const pitchDelta = Math.abs(map.getPitch() - viewport.pitch)
+    const isAlreadyThere =
+      centerDelta < 1e-5 && zoomDelta < 1e-3 && bearingDelta < 1e-2 && pitchDelta < 1e-2
+    if (isAlreadyThere) return
     map.easeTo({
       center: viewport.center,
       zoom: viewport.zoom,

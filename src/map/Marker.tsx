@@ -72,13 +72,21 @@ export function Marker({
 
   // Reactive prop: color. mapboxgl.Marker has no public setColor() — the
   // constructor option is the only supported way to set it — so an update
-  // here goes around the public API and repaints the marker's own SVG,
-  // the same workaround Mapbox's own issue tracker recommends.
+  // here goes around the public API and repaints the marker's own SVG
+  // directly, the same workaround Mapbox's own issue tracker recommends.
+  //
+  // The default marker's SVG (see mapbox-gl-js's `_createDefaultMarker`) is
+  // a flat `<ellipse>` (drop shadow, fill is a gradient url) + `<path>`
+  // (the colored teardrop shape, fill: this._color) + a second `<path>`
+  // (border outline, no fill attribute) + `<circle fill="white">` (the
+  // inner dot). Only the first `<path>`'s fill should track our color prop —
+  // `svg path[fill]` happens to match exactly that one, since the border
+  // path has no `fill` attribute and the circle isn't a `<path>` at all.
   useEffect(() => {
     const marker = markerRef.current
     if (!marker) return
-    const fillable = marker.getElement().querySelectorAll<SVGElement>('svg g[fill], svg path[fill]')
-    fillable.forEach((node) => node.setAttribute('fill', color))
+    const shape = marker.getElement().querySelector<SVGPathElement>('svg path[fill]')
+    shape?.setAttribute('fill', color)
   }, [color])
 
   // Reactive prop: draggable — mapboxgl.Marker exposes a real setter for this.

@@ -1,9 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { useMapStore } from './useMapStore'
 
-// zustand stores are module-level singletons, so every test gets a clean
-// slate by replacing the whole state with the snapshot taken before any
-// test has had a chance to mutate it.
+// stores are module-level singletons — reset between tests to avoid leaking state
 const initialState = useMapStore.getState()
 
 beforeEach(() => {

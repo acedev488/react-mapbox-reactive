@@ -62,8 +62,6 @@ export const useMapStore = create<MapStoreState>()(
   persist(
     (set) => ({
       viewport: DEFAULT_VIEWPORT,
-      // Called both by the map itself (after the user pans/zooms) and by UI
-      // controls that want to *drive* the map (e.g. a "reset view" button).
       setViewport: (viewport) => set({ viewport }),
 
       markers: [],
@@ -82,9 +80,6 @@ export const useMapStore = create<MapStoreState>()(
       selectedMarkerId: null,
       selectMarker: (id) => set({ selectedMarkerId: id }),
 
-      // Every knob a <Layer/> needs to redraw the cities circle layer lives
-      // here. The layer component never manages this state itself — it
-      // only reads it.
       citiesLayer: DEFAULT_CITIES_LAYER_CONFIG,
       updateCitiesLayer: (patch) =>
         set((s) => ({ citiesLayer: { ...s.citiesLayer, ...patch } })),
@@ -95,18 +90,13 @@ export const useMapStore = create<MapStoreState>()(
       activeBaseStyle: 'streets',
       setActiveBaseStyle: (activeBaseStyle) => set({ activeBaseStyle }),
 
-      // Deliberately not persisted (see `partialize` below) — it's a demo
-      // toggle, not something a returning visitor needs restored.
+      // not persisted — see partialize below
       showAnimatedMarker: false,
       setShowAnimatedMarker: (showAnimatedMarker) => set({ showAnimatedMarker }),
     }),
     {
       name: 'react-mapbox-reactive',
       version: 1,
-      // Only persist the state a returning visitor would actually want
-      // restored — never the transient `selectedMarkerId`, and never
-      // anything Mapbox-related (there's nothing Mapbox-related in here to
-      // begin with, which is the point).
       partialize: (state) => ({
         viewport: state.viewport,
         markers: state.markers,
@@ -114,9 +104,7 @@ export const useMapStore = create<MapStoreState>()(
         heatmapVisible: state.heatmapVisible,
         activeBaseStyle: state.activeBaseStyle,
       }),
-      // Defends against a corrupted/previous-shape blob in localStorage
-      // (a stale schema, a manually edited value, ...) rather than trusting
-      // it and letting Mapbox choke on `NaN` centers or non-array markers.
+      // Guards against a corrupted/stale-schema blob in localStorage.
       merge: (persisted, current) => {
         const p = (persisted ?? {}) as Partial<MapStoreState>
         const hasValidViewport =

@@ -1,12 +1,7 @@
 import { Marker } from '../map/Marker'
 import { useMapStore } from '../store/useMapStore'
 
-/**
- * Bridges store state to Mapbox entities: for every marker in zustand there
- * is exactly one <Marker/> element. Add one to the store -> a new
- * mapboxgl.Marker mounts. Remove one -> React unmounts its <Marker/> and the
- * cleanup effect tears down the mapboxgl.Marker. No manual bookkeeping.
- */
+// One <Marker/> per store entry — React's own list reconciliation handles the rest.
 export function MarkerLayer() {
   const markers = useMapStore((s) => s.markers)
   const updateMarker = useMapStore((s) => s.updateMarker)

@@ -1,9 +1,5 @@
 import { useMapStore } from '../store/useMapStore'
 
-/**
- * Purely a consumer of zustand state — proves that the map's camera position
- * (set imperatively inside MapContext) is reaching ordinary React state.
- */
 export function ViewportHud() {
   const { center, zoom } = useMapStore((s) => s.viewport)
 

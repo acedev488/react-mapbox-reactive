@@ -5,12 +5,7 @@ import type { LngLat } from '../map/types'
 const CENTER: LngLat = [-122.42, 37.78]
 const RADIUS_DEG = 0.06
 
-/**
- * The whole point of this component: <Marker/> doesn't know or care that
- * its `lngLat` prop is changing ~60 times a second from a rAF loop instead
- * of a user drag or a store update — it's still just a prop, updated via
- * the exact same `setLngLat` effect either way.
- */
+// Drives Marker's lngLat from a rAF loop instead of the store, to stress-test updates.
 export function AnimatedMarker() {
   const [lngLat, setLngLat] = useState<LngLat>(CENTER)
   const frameRef = useRef<number>()

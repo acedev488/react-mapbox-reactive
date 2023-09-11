@@ -3,11 +3,7 @@ import { Layer } from '../map/Layer'
 import { CITIES } from '../data/cities'
 import { useMapStore } from '../store/useMapStore'
 
-/**
- * A second, differently-typed layer sharing the same dataset as
- * <CitiesLayer/>. Rendered with `beforeId="cities"` so it always stacks
- * underneath the circle layer, no matter which one mounts first.
- */
+// Shares CITIES with <CitiesLayer/>; beforeId keeps it stacked underneath the circles.
 export function CitiesHeatmapLayer() {
   const visible = useMapStore((s) => s.heatmapVisible)
 

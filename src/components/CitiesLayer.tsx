@@ -3,12 +3,7 @@ import { Layer } from '../map/Layer'
 import { CITIES } from '../data/cities'
 import { useMapStore } from '../store/useMapStore'
 
-/**
- * The only "smart" piece here is the useMemo below — it exists purely so
- * that <Layer/> receives a stable `paint` object reference when nothing
- * relevant changed, keeping its key-by-key diffing meaningful instead of
- * re-running on every store update.
- */
+// useMemo keeps paint/layout references stable so Layer's diffing stays meaningful.
 export function CitiesLayer() {
   const { visible, color, radius, opacity } = useMapStore((s) => s.citiesLayer)
 

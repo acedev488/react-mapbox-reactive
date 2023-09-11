@@ -2,11 +2,6 @@ import mapboxgl from 'mapbox-gl'
 import { useMapContext } from '../map/MapContext'
 import { useMapStore } from '../store/useMapStore'
 
-/**
- * Not reactive by itself — just a button — but it's a good example of a
- * component reading the store and reaching into the map only in response to
- * a user action, rather than owning any map state of its own.
- */
 export function FitToMarkersButton() {
   const { map } = useMapContext()
   const markers = useMapStore((s) => s.markers)

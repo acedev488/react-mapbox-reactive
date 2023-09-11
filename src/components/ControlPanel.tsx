@@ -2,11 +2,7 @@ import { useMapStore } from '../store/useMapStore'
 import { FitToMarkersButton } from './FitToMarkersButton'
 import { ResetViewButton } from './ResetViewButton'
 
-/**
- * Ordinary React UI — the point being made here is what it *doesn't* do:
- * it never imports mapboxgl and never touches the map. It only calls store
- * actions; <CitiesLayer/> is what turns those store changes into map calls.
- */
+// Ordinary UI — never imports mapboxgl, only calls store actions.
 export function ControlPanel() {
   const { visible, color, radius, opacity } = useMapStore((s) => s.citiesLayer)
   const updateCitiesLayer = useMapStore((s) => s.updateCitiesLayer)
